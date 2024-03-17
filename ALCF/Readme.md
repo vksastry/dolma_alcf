@@ -48,3 +48,45 @@ de-dup work in terms of paragraph. Takes a document – which is one entry in ea
 If paragraph dedup is based on the filter.bin file we use. So if we want to make independent paragraph duplicates, we use separate .bin files. ​
 
 To determine : By default, the min number of words to match between 2 paragraphs to mark it as a duplicate is 0. IMO it should be more than the sequence length we would like to try. ​
+
+If you want to do the de-dup over the entire datasets, then use the same .bin file across all the documents under de-dup. Else specify a different bloom file for each file if you want to do it for a paragraph level inside the same directory. 
+
+## Mixing or filtering 
+
+Based on the tagging and de-deupe procedure, filter documents that match / do not match the constriants. ​
+```bash
+dolma -c wikipedia-mixer.yaml mix --processes 16​
+```
+Create this .yaml file as below. 
+
+```bash
+streams:
+    - name: getting-started
+      documents:
+        - ./wikipedia/v0/documents/*.gz
+
+      output:
+        path: ./wikipedia/example0/documents
+        max_size_in_bytes: 1_000_000_000
+      attributes:
+        - exp
+        - dedup
+      filter:
+        include:
+          - "$.attributes[?(@.exp__whitespace_tokenizer_with_paragraphs_v1__document[0][2] < 100000)]"
+        exclude:
+          - "$.attributes[?(@.exp__whitespace_tokenizer_with_paragraphs_v1__document[0][2] < 50)]"
+          - "$.attributes[?(@.exp__ft_lang_id_en_paragraph_with_doc_score_v2__doc_en[0][2] <= 0.5)]"
+          - "$@.attributes[?(@.bff_duplicate_paragraph_spans && @.bff_duplicate_paragraph_spans[0] && @.bff_duplicate_paragraph_spans[0][2] >= 1.0)]"
+
+      span_replacement:
+        - span: "$.attributes.exp__cld2_en_paragraph_with_doc_score_v2__not_en"
+          min_score: 0.1
+          replacement: ''
+
+processes: 1
+```
+Filters for documents with 
+  * less than 100000 words and more than 50 words
+  * each paragraph has more than 0.5 probability of english. 
+  * It is not tagged as duplicate. 
