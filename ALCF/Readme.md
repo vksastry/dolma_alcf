@@ -15,5 +15,5 @@ The expected document in a file (in other terms, a jsonl entry/line in each json
 
 ## Directory structure 
 
-The dolma toolkit has some dependency on the structure of the input directory. It assumes that the directory structure has the following directory tree. Ex: `{$PARENT_DIR}/documents/*.gz` where the `*.gz` are the jsonl files compressed umder that directory. 
-Ex: The wikipedia dataset uses: v0/documents/*.gz 
+The dolma toolkit has some dependency on the structure of the input directory. It assumes that the directory structure has the following directory tree. Ex: `{$PARENT_DIR}/documents/*.gz` where the `*.gz` are the jsonl files compressed under that directory. 
+Ex: The wikipedia dataset uses: wikipedia/v0/documents/*.gz 
