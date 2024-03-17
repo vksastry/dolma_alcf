@@ -17,3 +17,21 @@ The expected document in a file (in other terms, a jsonl entry/line in each json
 
 The dolma toolkit has some dependency on the structure of the input directory. It assumes that the directory structure has the following directory tree. Ex: `{$PARENT_DIR}/documents/*.gz` where the `*.gz` are the jsonl files compressed under that directory. 
 Ex: The wikipedia dataset uses: wikipedia/v0/documents/*.gz 
+
+## Dolma Tagging 
+```bash
+dolma tag --documents "wikipedia/v0/documents/*" --experiment exp --taggers random_number_v1 cld2_en_paragraph_with_doc_score_v2  ft_lang_id_en_paragraph_with_doc_score_v2 char_length_with_paragraphs_v1 whitespace_tokenizer_with_paragraphs_v1 --processes 16
+```
+* --documents : path to the jsonl files.
+* --experiment : The name of the o/p directory where the tagging attributes will be stored. For the above v0/documents/*.gz directory, The tagging information will be found under the following directory: v0/attributes/exp/*.gz -- These gz files will have the tagging information.
+* --taggers : You can use the taggers that you are interested. Note that depending the type and number of taggers used, the time to process will vary considerably.  cld2_en_paragraph_with_doc_score_v2 and ft_lang_id_en_paragraph_with_doc_score_v2 takes a very long time.
+
+The tagging information for the above data looks like below. 
+
+Note: Each json line or entry is called a document. Each documents are split up to different paragraphs. ('\n' as the dilimiter). 
+exp__whitespace_tokenizer_with_paragraphs_v1__document":[[0,2847,610.0]] suggests that the document has 2847 characters with 610 whitespaces. 
+Attributes generated on paragraphs will generate in spans - (start_paragraph_idx, end_paragraph_idx, attribute value) For example look at attribute exp__cld2_en_paragraph_with_doc_score_v2__en (which indicates what probability the paragraph is from english languague), So ex: [7,170,0.99] says that a paragraph which starts from index 7 to index 170, the probability that it is english languague is 0.99. 
+
+```bash
+{"id":"1","attributes":{"exp__random_number_v1__random":[[0,2847,0.43444]],"exp__cld2_en_paragraph_with_doc_score_v2__en":[[0,6,0.0],[7,170,0.99],[170,327,0.99],[327,338,0.0],[338,542,0.99],[542,788,0.99],[788,1332,0.99],[1332,1739,0.99],[1739,1918,0.99],[1918,2290,0.99],[2290,2738,0.99],[2738,2755,0.94],[2755,2847,0.98]],"exp__cld2_en_paragraph_with_doc_score_v2__not_en":[[0,6,1.0],[7,170,0.01],[170,327,0.01],[327,338,1.0],[338,542,0.01],[542,788,0.01],[788,1332,0.01],[1332,1739,0.01],[1739,1918,0.01],[1918,2290,0.01],[2290,2738,0.01],[2738,2755,0.06],[2755,2847,0.02]],"exp__cld2_en_paragraph_with_doc_score_v2__doc_en":[[0,2847,0.98312]],"exp__cld2_en_paragraph_with_doc_score_v2__doc_not_en":[[0,2847,0.01688]],"exp__ft_lang_id_en_paragraph_with_doc_score_v2__en":[[0,6,0.6573],[7,170,0.97417],[170,327,0.98952],[327,338,0.95427],[338,542,0.99331],[542,788,0.98935],[788,1332,0.99042],[1332,1739,0.98888],[1739,1918,0.95124],[1918,2290,0.98682],[2290,2738,0.95478],[2738,2755,0.99506],[2755,2847,0.81944]],"exp__ft_lang_id_en_paragraph_with_doc_score_v2__not_en":[[0,6,0.3427],[7,170,0.02583],[170,327,0.01048],[327,338,0.04573],[338,542,0.00669],[542,788,0.01065],[788,1332,0.00958],[1332,1739,0.01112],[1739,1918,0.04876],[1918,2290,0.01318],[2290,2738,0.04522],[2738,2755,0.00494],[2755,2847,0.18056]],"exp__ft_lang_id_en_paragraph_with_doc_score_v2__doc_en":[[0,2847,0.9741]],"exp__ft_lang_id_en_paragraph_with_doc_score_v2__doc_not_en":[[0,2847,0.0259]],"exp__char_length_with_paragraphs_v1__paragraph":[[0,6,6.0],[7,170,163.0],[170,327,157.0],[327,338,11.0],[338,542,204.0],[542,788,246.0],[788,1332,544.0],[1332,1739,407.0],[1739,1918,179.0],[1918,2290,372.0],[2290,2738,448.0],[2738,2755,17.0],[2755,2847,92.0]],"exp__char_length_with_paragraphs_v1__document":[[0,2847,2847.0]],"exp__whitespace_tokenizer_with_paragraphs_v1__paragraph":[[0,6,2.0],[7,170,38.0],[170,327,35.0],[327,338,4.0],[338,542,46.0],[542,788,59.0],[788,1332,116.0],[1332,1739,79.0],[1739,1918,36.0],[1918,2290,80.0],[2290,2738,87.0],[2738,2755,5.0],[2755,2847,23.0]],"exp__whitespace_tokenizer_with_paragraphs_v1__document":[[0,2847,610.0]]},"source":"wikipedia"}
+```
