@@ -89,4 +89,8 @@ processes: 1
 Filters for documents with 
   * less than 100000 words and more than 50 words
   * each paragraph has more than 0.5 probability of english. 
-  * It is not tagged as duplicate. 
+  * It is not tagged as duplicate.
+
+## scripts for Polaris 
+You can use the scripts uploaded in this directory to run the dolma toolkit attribute generation parallely on polaris. Use ./dolma_pipeline.sh <task> with task equal to tag or dedup. 
+TBD : To add for mix. 
